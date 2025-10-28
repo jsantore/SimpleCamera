@@ -27,11 +27,22 @@ type player struct {
 	x, y int
 }
 
-func (demo cameraDemoGame) Update() error {
+func (demo *cameraDemoGame) Update() error {
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) && demo.player.x > 100 {
+		demo.player.x -= 5
+	} else if ebiten.IsKeyPressed(ebiten.KeyRight) && demo.player.x < 1800 {
+		demo.player.x += 5
+		log.Println("x is now ", demo.player.x)
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyUp) && demo.player.y > 100 {
+		demo.player.y -= 5
+	} else if ebiten.IsKeyPressed(ebiten.KeyDown) && demo.player.y < 900 {
+		demo.player.y += 5
+	}
 	return nil
 }
 
-func (demo cameraDemoGame) Draw(screen *ebiten.Image) {
+func (demo *cameraDemoGame) Draw(screen *ebiten.Image) {
 	//draw to the world at first
 	//first draw background
 	demo.drawOps.GeoM.Reset()
@@ -41,11 +52,14 @@ func (demo cameraDemoGame) Draw(screen *ebiten.Image) {
 	demo.drawOps.GeoM.Translate(float64(demo.player.x), float64(demo.player.y))
 	demo.displayedLevel.DrawImage(demo.player.pict, &demo.drawOps)
 
+	//now move the camera to be over the player
+	demo.cameraView.Follow.H = demo.player.y * 2
+	demo.cameraView.Follow.W = demo.player.x * 2
 	//finally draw to the screen
 	demo.cameraView.Draw(demo.displayedLevel, screen)
 }
 
-func (demo cameraDemoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (demo *cameraDemoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return outsideWidth, outsideHeight
 }
 
