@@ -15,8 +15,8 @@ import (
 var EmbeddedAssets embed.FS
 
 type cameraDemoGame struct {
-	background     *ebiten.Image
-	displayedLevel *ebiten.Image
+	background     *ebiten.Image //the background image on disk
+	displayedLevel *ebiten.Image //the world image: background + player
 	cameraView     *camera.Camera
 	player         player
 	drawOps        ebiten.DrawImageOptions
@@ -32,7 +32,6 @@ func (demo *cameraDemoGame) Update() error {
 		demo.player.x -= 5
 	} else if ebiten.IsKeyPressed(ebiten.KeyRight) && demo.player.x < 1800 {
 		demo.player.x += 5
-		log.Println("x is now ", demo.player.x)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) && demo.player.y > 100 {
 		demo.player.y -= 5
